@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Transaction from "../models/transaction.model.js";
 import {
   parseStatement,
@@ -8,14 +9,15 @@ import { tagShouldReconcile } from "../services/shouldReconcile.service.js";
 import SOURCES from "../constants/sources.js";
 
 export const uploadFile = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
     const { source } = req.body;
-
-    console.log("req.body", source)
 
     // Check if source matches any value in SOURCES object
     if (!source || !Object.values(SOURCES).includes(source)) {
@@ -29,10 +31,8 @@ export const uploadFile = async (req, res) => {
 
     // 1. Parse Key Logic
     if (source === SOURCES.STATEMENT) {
-      console.log("source", source);
       transactions = parseStatement(buffer);
     } else {
-      console.log("source", source);
       transactions = parseSettlement(buffer);
     }
 
@@ -56,8 +56,10 @@ export const uploadFile = async (req, res) => {
       uploadBatchId,
     }));
 
-    // 4. Save to DB
-    await Transaction.insertMany(transactions);
+    // 4. Save to DB with session
+    await Transaction.insertMany(transactions, { session });
+
+    await session.commitTransaction();
 
     res.status(200).json({
       message: "File processed and transactions saved successfully",
@@ -65,7 +67,10 @@ export const uploadFile = async (req, res) => {
       uploadBatchId,
     });
   } catch (error) {
+    await session.abortTransaction();
     console.error(error);
     res.status(500).json({ message: error.message });
+  } finally {
+    session.endSession();
   }
 };
