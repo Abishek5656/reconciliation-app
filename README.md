@@ -20,7 +20,20 @@ A full-stack web application for reconciling financial transactions between Stat
   - Color-coded status chips for easy identification.
 - **Responsive Design**: Built with Material UI for a modern and accessible interface.
 
-## 🛠️ Tech Stack
+## � Screenshots
+
+### Data Upload
+
+![Upload Page](./assets/upload-page.png)
+
+### Reconciliation Details
+
+![Transaction List](./assets/transaction-list.png)
+
+
+![Dashboard Preview](./assets/dashboard-preview.png)
+
+## �🛠️ Tech Stack
 
 ### Frontend
 
