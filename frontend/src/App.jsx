@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
-import UploadPage from './pages/UploadPage';
-import ClassificationPage from './pages/ClassificationPage';
+import { AppBar, Toolbar, Typography, Button, Box, CssBaseline, ThemeProvider, createTheme, CircularProgress } from '@mui/material';
+
+const UploadPage = lazy(() => import('./pages/UploadPage'));
+const ClassificationPage = lazy(() => import('./pages/ClassificationPage'));
 
 const theme = createTheme({
     palette: {
@@ -55,10 +56,16 @@ function App() {
                         </Toolbar>
                     </AppBar>
 
-                    <Routes>
-                        <Route path="/" element={<UploadPage />} />
-                        <Route path="/report" element={<ClassificationPage />} />
-                    </Routes>
+                    <Suspense fallback={
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                            <CircularProgress />
+                        </Box>
+                    }>
+                        <Routes>
+                            <Route path="/" element={<UploadPage />} />
+                            <Route path="/report" element={<ClassificationPage />} />
+                        </Routes>
+                    </Suspense>
                 </Box>
             </Router>
         </ThemeProvider>
