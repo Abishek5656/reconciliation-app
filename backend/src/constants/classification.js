@@ -1,0 +1,9 @@
+export const PRESENT_IN_BOTH = 5;
+export const PRESENT_IN_SETTLEMENT_ONLY = 6;
+export const PRESENT_IN_STATEMENT_ONLY = 7;
+
+export default {
+  PRESENT_IN_BOTH,
+  PRESENT_IN_SETTLEMENT_ONLY,
+  PRESENT_IN_STATEMENT_ONLY,
+};
